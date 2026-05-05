@@ -143,3 +143,39 @@ void kmain() {
         else if(strcmp(c1, "mv") == 0) do_mv(a1, a2);
     }
 }
+void kmain() {
+    print("NIGHT KERNEL v1.0\n");
+    char input_buffer[64];
+    int char_index = 0;
+
+    while(1) {
+        print("\nnight@root> ");
+        char_index = 0;
+
+        // 1. DATA COLLECTION: Wait for the user to finish a line
+        while(1) {
+            uint8_t scancode = inb(0x60); // Read from keyboard port
+            if (!(scancode & 0x80) && kbd[scancode] != 0) {
+                char c = kbd[scancode];
+                
+                if (c == '\n') { // User pressed Enter
+                    input_buffer[char_index] = '\0'; // End the string
+                    break;
+                } else if (char_index < 63) {
+                    input_buffer[char_index++] = c;
+                    putchar(c); // Show the character on screen
+                }
+                while(!(inb(0x60) & 0x80)); // Wait for key release (debounce)
+            }
+        }
+
+        // 2. COMMAND INTERPRETATION: Decide what to do with the string
+        if (strcmp(input_buffer, "ls") == 0) {
+            do_ls();
+        } else if (strcmp(input_buffer, "reboot") == 0) {
+            outb(0x64, 0xFE);
+        } else {
+            print("\nCommand not found.");
+        }
+    }
+}
