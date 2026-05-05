@@ -7,6 +7,31 @@
 #define MAX_NAME 32
 #define VGA_WIDTH 80
 
+// --- PROGRAM DEFINITIONS ---
+typedef void (*program_entry_t)(int argc, char** argv);
+struct program {
+    char name[16];
+    program_entry_t entry;
+};
+
+void prog_echo(int argc, char** argv) {
+    for (int i = 1; i < argc; i++) {
+        print(argv[i]); print(" ");
+    }
+}
+
+void prog_reboot(int argc, char** argv) {
+    print("Rebooting...");
+    uint8_t good = 0x02;
+    while (good & 0x02) good = inb(0x64);
+    outb(0x64, 0xFE); // Pulse the CPU reset line
+}
+
+struct program bin[] = {
+    {"echo", prog_echo},
+    {"reboot", prog_reboot}
+};
+
 typedef enum { FS_FILE, FS_DIR } NODE_TYPE;
 
 struct fs_node {
