@@ -1,6 +1,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "include/common.h"
+#include "include/system.h"
 
 /* --- CONFIG & DATA STRUCTURES --- */
 #define MAX_CHILDREN 10
