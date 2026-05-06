@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include "include/common.h"
-#include "include/system.h"
+#include "common.h"
+#include "system.h"
 
 struct idt_entry {
     uint16_t base_low;
